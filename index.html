@@ -515,9 +515,9 @@
   Step 4: Go to Account → copy Public Key below
   ═══════════════════════════════════════════════════════
   */
-  const EMAILJS_PUBLIC_KEY  = "I6mU9FXHcaicCoPaB";   // ← paste here
-  const EMAILJS_SERVICE_ID  = "service_jymr42k";   // ← paste here
-  const EMAILJS_TEMPLATE_ID = "template_xla0qd5";  // ← paste here
+  const EMAILJS_PUBLIC_KEY  = "I6mU9FXHcaicCoPaB";
+  const EMAILJS_SERVICE_ID  = "service_jymr42k";
+  const EMAILJS_TEMPLATE_ID = "template_xla0qd5";
 
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
@@ -571,7 +571,7 @@
       document.getElementById('mSuccess').style.display = 'block';
       btn.textContent = '✅ Request Sent!';
     } catch(err) {
-      alert('Something went wrong. Please call us directly on +91 9101807588.');
+      alert('Error: ' + (err?.text || err?.message || JSON.stringify(err)) + '\n\nPlease call +91 9101807588');
       btn.textContent = 'Send Booking Request ✉';
       btn.disabled = false;
     }
@@ -611,7 +611,7 @@
       document.getElementById('successMsg').scrollIntoView({behavior:'smooth',block:'center'});
       btn.textContent = '✅ Request Sent!';
     } catch(err) {
-      alert('Something went wrong. Please call us directly on +91 9101807588.');
+      alert('Error: ' + (err?.text || err?.message || JSON.stringify(err)) + '\n\nPlease call +91 9101807588');
       btn.textContent = 'Send Booking Request ✉';
       btn.disabled = false;
     }
