@@ -453,7 +453,7 @@
       </div>
       <div class="ci">
         <h4>✉️ Email</h4>
-        <p><a href="mailto:deka.manoj730@gmail.com">deka.manoj730@gmail.com</a></p>
+        <p><a href="/cdn-cgi/l/email-protection#abcfcec0ca85c6cac5c4c19c989bebccc6cac2c785c8c4c6"><span class="__cf_email__" data-cfemail="3450515f551a59555a5b5e030704745359555d581a575b59">[email&#160;protected]</span></a></p>
       </div>
       <div class="ci">
         <h4>✈️ Getting Here</h4>
@@ -475,7 +475,7 @@
 <!-- FOOTER -->
 <footer>
   <p style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--gold);margin-bottom:5px;">Village Vista Homestay</p>
-  <p>Tezpur, Assam · India &nbsp;|&nbsp; <a href="mailto:deka.manoj730@gmail.com">deka.manoj730@gmail.com</a> &nbsp;|&nbsp; <a href="tel:+919101807588">+91 9101807588</a></p>
+  <p>Tezpur, Assam · India &nbsp;|&nbsp; <a href="/cdn-cgi/l/email-protection#7014151b115e1d111e1f1a47434030171d11191c5e131f1d"><span class="__cf_email__" data-cfemail="2b4f4e404a05464a4544411c181b6b4c464a424705484446">[email&#160;protected]</span></a> &nbsp;|&nbsp; <a href="tel:+919101807588">+91 9101807588</a></p>
   <p style="margin-top:7px;">
     <a href="https://wa.me/919101807588" target="_blank">WhatsApp Us</a>
     &nbsp;·&nbsp;
@@ -502,9 +502,24 @@
   </div>
 </div>
 
+<!-- EmailJS SDK — sends emails directly to Gmail, no email app needed -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  const HOST_EMAIL = "deka.manoj730@gmail.com";
-  const HOST_PHONE = "+919101807588";
+  /*
+  ═══════════════════════════════════════════════════════
+  EMAILJS SETUP — Follow the guide PDF to fill these in
+  ═══════════════════════════════════════════════════════
+  Step 1: Sign up free at https://www.emailjs.com
+  Step 2: Add Gmail service → copy Service ID below
+  Step 3: Create email template → copy Template ID below
+  Step 4: Go to Account → copy Public Key below
+  ═══════════════════════════════════════════════════════
+  */
+  const EMAILJS_PUBLIC_KEY  = "I6mU9FXHcaicCoPaB";   // ← paste here
+  const EMAILJS_SERVICE_ID  = "service_jymr42k";   // ← paste here
+  const EMAILJS_TEMPLATE_ID = "template_xla0qd5";  // ← paste here
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
   // Set min date to today
   const today = new Date().toISOString().split('T')[0];
@@ -528,7 +543,7 @@
   function closeModal(){ document.getElementById('modalOverlay').classList.remove('open'); }
   function closeModalOutside(e){ if(e.target.id==='modalOverlay') closeModal(); }
 
-  function submitModal(){
+  async function submitModal(){
     const name  = document.getElementById('m_name').value.trim();
     const email = document.getElementById('m_email').value.trim();
     const phone = document.getElementById('m_phone').value.trim();
@@ -536,18 +551,33 @@
     const co    = document.getElementById('m_out').value;
     const room  = document.getElementById('mRoom').textContent;
     if(!name||!email||!ci||!co){ alert('Please fill in all required fields (*).'); return; }
-    const sub = encodeURIComponent(`Booking Request — ${room} — ${name}`);
-    const bod = encodeURIComponent(
-      `New Booking Request\nVillage Vista Homestay, Tezpur\n${'='.repeat(40)}\n\n`+
-      `Guest Name : ${name}\nEmail      : ${email}\nPhone      : ${phone||'Not provided'}\n\n`+
-      `Room       : ${room}\nCheck-in   : ${ci}\nCheck-out  : ${co}\n\n`+
-      `— Sent from Village Vista Homestay website`
-    );
-    window.location.href = `mailto:${HOST_EMAIL}?subject=${sub}&body=${bod}`;
-    document.getElementById('mSuccess').style.display = 'block';
+
+    const btn = document.querySelector('#modalOverlay .f-submit');
+    btn.textContent = 'Sending…'; btn.disabled = true;
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:    "deka.manoj730@gmail.com",
+        guest_name:  name,
+        guest_email: email,
+        guest_phone: phone || 'Not provided',
+        room:        room,
+        checkin:     ci,
+        checkout:    co,
+        adults:      '—',
+        children:    '—',
+        requests:    '—',
+      });
+      document.getElementById('mSuccess').style.display = 'block';
+      btn.textContent = '✅ Request Sent!';
+    } catch(err) {
+      alert('Something went wrong. Please call us directly on +91 9101807588.');
+      btn.textContent = 'Send Booking Request ✉';
+      btn.disabled = false;
+    }
   }
 
-  function submitBooking(){
+  async function submitBooking(){
     const fn  = document.getElementById('firstName').value.trim();
     const ln  = document.getElementById('lastName').value.trim();
     const em  = document.getElementById('guestEmail').value.trim();
@@ -559,19 +589,34 @@
     const ch  = document.getElementById('children').value;
     const req = document.getElementById('requests').value.trim();
     if(!fn||!ln||!em||!rm||!ci||!co){ alert('Please fill in all required fields (marked *).'); return; }
-    const sub = encodeURIComponent(`Booking Request — ${rm} — ${fn} ${ln}`);
-    const bod = encodeURIComponent(
-      `New Booking Request\nVillage Vista Homestay, Tezpur\n${'='.repeat(40)}\n\n`+
-      `Guest Name   : ${fn} ${ln}\nEmail        : ${em}\nPhone        : ${ph||'Not provided'}\n\n`+
-      `Room         : ${rm}\nCheck-in     : ${ci}\nCheck-out    : ${co}\nAdults       : ${ad}\nChildren     : ${ch}\n\n`+
-      `Special Requests:\n${req||'None'}\n\n`+
-      `— Sent from Village Vista Homestay website`
-    );
-    window.location.href = `mailto:${HOST_EMAIL}?subject=${sub}&body=${bod}`;
-    document.getElementById('confirmEmail').textContent = em;
-    document.getElementById('successMsg').style.display = 'block';
-    document.getElementById('successMsg').scrollIntoView({behavior:'smooth',block:'center'});
+
+    const btn = document.querySelector('#booking .f-submit');
+    btn.textContent = 'Sending…'; btn.disabled = true;
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:    "deka.manoj730@gmail.com",
+        guest_name:  `${fn} ${ln}`,
+        guest_email: em,
+        guest_phone: ph || 'Not provided',
+        room:        rm,
+        checkin:     ci,
+        checkout:    co,
+        adults:      ad,
+        children:    ch,
+        requests:    req || 'None',
+      });
+      document.getElementById('confirmEmail').textContent = em;
+      document.getElementById('successMsg').style.display = 'block';
+      document.getElementById('successMsg').scrollIntoView({behavior:'smooth',block:'center'});
+      btn.textContent = '✅ Request Sent!';
+    } catch(err) {
+      alert('Something went wrong. Please call us directly on +91 9101807588.');
+      btn.textContent = 'Send Booking Request ✉';
+      btn.disabled = false;
+    }
   }
-</script>
+
+-e </script>
 </body>
 </html>
